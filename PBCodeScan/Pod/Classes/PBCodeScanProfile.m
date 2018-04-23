@@ -200,7 +200,7 @@
     }
     
     //扫码区域Y轴最小坐标
-    CGFloat centerUpOffset = 44.f;
+    CGFloat centerUpOffset = -20.f;
     CGFloat YMinRetangle = self.frame.size.height / 2.0 - sizeRetangle.height/2.0 - centerUpOffset;
     CGFloat YMaxRetangle = YMinRetangle + sizeRetangle.height;
     CGFloat XRetangleRight = self.frame.size.width - XRetangleLeft;
@@ -353,7 +353,7 @@
     //    }
     
     //扫码区域Y轴最小坐标
-    CGFloat centerUpOffset = 44.f;
+    CGFloat centerUpOffset = -20.f;
     CGFloat YMinRetangle = self.frame.size.height / 2.0 - sizeRetangle.height/2.0 - centerUpOffset;
     
     //设备启动状态提示
@@ -736,6 +736,54 @@
 
 @implementation PBCodeScanProfile
 
+- (UIBarButtonItem *)barSpacer {
+    UIBarButtonItem *barSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    barSpacer.width = - PB_CONTENT_MARGIN;
+    return barSpacer;
+}
+
+- (UIBarButtonItem *)assembleBar:(UIImage *_Nullable)icon title:(NSString *)title target:(id)target selector:(SEL)selector {
+    CGFloat itemSize = PB_NAVIBAR_ITEM_SIZE;
+    UIFont *font = [UIFont fontWithName:@"Helvetica" size:PBFontTitleSize];
+    CGFloat realSize = [title pb_sizeThatFitsWithFont:font width:PBSCREEN_WIDTH].width;
+    itemSize = MAX(realSize, itemSize) + PB_FONT_OFFSET;
+    CGSize m_bar_size = {itemSize, PB_NAVIBAR_ITEM_SIZE};
+    UIButton *menu = [UIButton buttonWithType:UIButtonTypeCustom];
+    menu.titleLabel.font = font;
+    menu.frame = (CGRect){.origin = CGPointZero,.size = m_bar_size};
+    [menu setTitle:title forState:UIControlStateNormal];
+    [menu setImage:icon forState:UIControlStateNormal];
+    [menu setTitleColor:pbColorMake(0x333333) forState:UIControlStateNormal];
+    [menu addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithCustomView:menu];
+    return bar;
+}
+
+- (PBNavigationBar *)initializedNavigationBar {
+    if (!self.navigationBar) {
+        //customize settings
+        UIColor *tintColor = pbColorMake(0x333333);
+        UIColor *barTintColor = [UIColor whiteColor];//影响背景
+        UIFont *font = [UIFont boldSystemFontOfSize:PBFontTitleSize + PBFONT_OFFSET];
+        NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:tintColor, NSForegroundColorAttributeName,font,NSFontAttributeName, nil];
+        CGRect barBounds = CGRectZero;
+        PBNavigationBar *naviBar = [[PBNavigationBar alloc] initWithFrame:barBounds];
+        naviBar.barStyle  = UIBarStyleBlack;
+        //naviBar.backgroundColor = [UIColor redColor];
+        UIImage *bgImg = [UIImage pb_imageWithColor:barTintColor];
+        [naviBar setBackgroundImage:bgImg forBarMetrics:UIBarMetricsDefault];
+        UIImage *lineImg = [UIImage pb_imageWithColor:pbColorMake(PB_NAVIBAR_BARTINT_HEX)];
+        [naviBar setShadowImage:lineImg];// line
+        naviBar.barTintColor = barTintColor;
+        naviBar.tintColor = tintColor;//影响item字体
+        [naviBar setTranslucent:false];
+        [naviBar setTitleTextAttributes:attributes];//影响标题
+        return naviBar;
+    }
+    
+    return self.navigationBar;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -743,7 +791,8 @@
     //init back navigation bar item
     //left
     UIBarButtonItem *spacer = [self barSpacer];
-    UIBarButtonItem *backBarItem = [self backBarButtonItem:nil withIconUnicode:@"\U0000e6e2"];
+    //UIImage *image = [UIImage imageNamed:@"pb_navigationBar_back"];
+    UIBarButtonItem *backBarItem = [self assembleBar:nil title:@"返回" target:self selector:@selector(defaultGoBackStack)];
     //[self.navigationBar pushNavigationItem:leftItem animated:true];
     UINavigationItem *title = [[UINavigationItem alloc] initWithTitle:@"QR二维码"];
     title.leftBarButtonItems = @[spacer, backBarItem];
@@ -771,18 +820,18 @@
      Denied             // 用户拒绝应用访问
      Authorized         // 用户允许应用访问
      */
-    ClusterAuthorizationStatus status = [ClusterPrePermissions cameraPermissionAuthorizationStatus];
-    if (status == ClusterAuthorizationStatusDenied || status == ClusterAuthorizationStatusRestricted) {
-        
-    } else {
-        [[ClusterPrePermissions sharedPermissions] showCameraPermissionsWithTitle:@"请允许访问您的相机？" message:@"此功能需要使用您的相机设备，请选择<给予权限>和<允许>" denyButtonTitle:@"稍后" grantButtonTitle:@"给予权限" completionHandler:^(BOOL hasPermission, ClusterDialogResult userDialogResult, ClusterDialogResult systemDialogResult) {
-            if (hasPermission) {
-                
-            } else {
-                
-            }
-        }];
-    }
+//    ClusterAuthorizationStatus status = [ClusterPrePermissions cameraPermissionAuthorizationStatus];
+//    if (status == ClusterAuthorizationStatusDenied || status == ClusterAuthorizationStatusRestricted) {
+//
+//    } else {
+//        [[ClusterPrePermissions sharedPermissions] showCameraPermissionsWithTitle:@"请允许访问您的相机？" message:@"此功能需要使用您的相机设备，请选择<给予权限>和<允许>" denyButtonTitle:@"稍后" grantButtonTitle:@"给予权限" completionHandler:^(BOOL hasPermission, ClusterDialogResult userDialogResult, ClusterDialogResult systemDialogResult) {
+//            if (hasPermission) {
+//
+//            } else {
+//
+//            }
+//        }];
+//    }
 }
 
 - (BOOL)whetherCanAccessCamera {
@@ -802,6 +851,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -828,22 +878,13 @@
 }
 
 - (void)startScanAction {
-    ClusterAuthorizationStatus status = [ClusterPrePermissions cameraPermissionAuthorizationStatus];
-    if (status == ClusterAuthorizationStatusDenied || status == ClusterAuthorizationStatusRestricted) {
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
         [self clearResources];
         [self alertWithError:@"请到设置隐私中开启本程序相机权限!"];
         return;
-    } else if (status == ClusterAuthorizationStatusUnDetermined){
+    } else if (status == AVAuthorizationStatusNotDetermined){
         
-        [[ClusterPrePermissions sharedPermissions] showCameraPermissionsWithTitle:@"请允许访问您的相机？" message:@"此功能需要使用您的相机设备，请选择<给予权限>和<允许>" denyButtonTitle:@"稍后" grantButtonTitle:@"给予权限" completionHandler:^(BOOL hasPermission, ClusterDialogResult userDialogResult, ClusterDialogResult systemDialogResult) {
-            if (hasPermission) {
-                
-            } else {
-                [self clearResources];
-                //[self alertWithError:@"请到设置隐私中开启本程序相机权限!"];
-                return;
-            }
-        }];
     }
     [self clearResources];
     
@@ -867,7 +908,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [self.scanEngine stopScan];
     [self.scanView stopScanAnimation];

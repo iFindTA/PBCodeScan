@@ -9,8 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "PBConstant.h"
 #import <PBKits/PBKits.h>
+#import "PBNavigationBar.h"
 #import <PBMediator/PBMediator.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SJFullscreenPopGesture/UINavigationController+SJVideoPlayerAdd.h>
+
+@interface MENavigationBar :UINavigationBar
+
+@end
 
 /**
  FLK Base Classes
@@ -39,9 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL busy;
 
 /**
- the custom navigationBar
+ the custom navigationBar, adjust for iOS11.0+
  */
-@property (nonatomic, strong, readonly) UINavigationBar *navigationBar;
+@property (nonatomic, strong, readonly) PBNavigationBar *navigationBar;
 
 /**
  whether self.view is visible
@@ -68,6 +74,10 @@ NS_ASSUME_NONNULL_BEGIN
  hidden custom navigationBar, move bar outof screen to headtop!
  */
 - (void)hiddenNavigationBar;
+/**
+ * update style(full/left), default was full = 1, and left = 0
+ * */
+- (void)updateGesturePopStyle:(int)style;
 
 /**
  change the color of navigationBar's shadow image
@@ -112,6 +122,15 @@ NS_ASSUME_NONNULL_BEGIN
  @return bar item
  */
 - (UIBarButtonItem *)barWithIconUnicode:(NSString *)iconCode withTarget:(nullable id)target withSelector:(nullable SEL)selector;
+
+/**
+ generate navigationBar normal item
+
+ @param backTitle for item
+ @param img for item
+ @return bar item
+ */
+- (UIBarButtonItem *)backBarButtonItem:(NSString * _Nullable)backTitle iconImage:(UIImage * _Nullable)img;
 
 /**
  default pop stack or dismiss event
@@ -160,6 +179,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)showAlertWithTitle:(NSString * _Nullable)title withMsg:(NSString * _Nullable)msg whetherShowOK:(BOOL)okShow whetherShowCancel:(BOOL)cancelShow withOKItem:(NSString * _Nullable)ok withOKCompletion:(void(^_Nullable)())okBlock withCancelCompletion:(void(^_Nullable)())cancelBlock;
 
-NS_ASSUME_NONNULL_END
-
 @end
+
+FOUNDATION_EXPORT CGFloat pb_expectedStatusBarHeight();
+
+FOUNDATION_EXPORT void pb_adjustsScrollViewInsets(UIScrollView * scrollView);
+
+NS_ASSUME_NONNULL_END

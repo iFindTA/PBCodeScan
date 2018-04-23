@@ -212,7 +212,6 @@
 				60C817161F62677700CEC5D6 /* Sources */,
 				60C817171F62677700CEC5D6 /* Frameworks */,
 				60C817181F62677700CEC5D6 /* Resources */,
-				102B7BD77E1452C5C2ED9773 /* [CP] Embed Pods Frameworks */,
 				C5AC6CE1C2115A5223CC0700 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -337,34 +336,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		102B7BD77E1452C5C2ED9773 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PBCodeScan/Pods-PBCodeScan-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9C63EF62182B88D0F95FF821 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PBCodeScan-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C5AC6CE1C2115A5223CC0700 /* [CP] Copy Pods Resources */ = {
@@ -373,9 +360,20 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-PBCodeScan/Pods-PBCodeScan-resources.sh",
+				"${PODS_ROOT}/PBBaseClasses/PBBaseClasses/Pod/Assets/en.lproj",
+				"${PODS_ROOT}/PBBaseClasses/PBBaseClasses/Pod/Assets/zh-Hans.lproj",
+				"${PODS_ROOT}/PBBaseClasses/PBBaseClasses/Pod/Assets/PBBaseClasses.xcassets/Contents.json",
+				"${PODS_ROOT}/PBBaseClasses/PBBaseClasses/Pod/Assets/PBBaseClasses.xcassets/pb_navigationBar_back.imageset",
+				"${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Contents.json",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pb_navigationBar_back.imageset",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SVProgressHUD.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

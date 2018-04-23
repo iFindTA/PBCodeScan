@@ -11,7 +11,7 @@
 
 NSString * const PB_NAVISTACK_PUSH_SAME_SEL            =   @"classWhetherCanBePushedRepeatly";
 
-@interface PBBaseNavigationProfile ()
+@interface PBBaseNavigationProfile () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) dispatch_queue_t excuteQueue;
 
@@ -41,7 +41,6 @@ NSString * const PB_NAVISTACK_PUSH_SAME_SEL            =   @"classWhetherCanBePu
 
 - (void)loadView {
     [super loadView];
-    
 }
 
 - (void)viewDidLoad {
@@ -99,6 +98,13 @@ NSString * const PB_NAVISTACK_PUSH_SAME_SEL            =   @"classWhetherCanBePu
     //    }
     
     return exist;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (self.viewControllers.count <= 1 ) {
+        return NO;
+    }
+    return YES;
 }
 
 /*

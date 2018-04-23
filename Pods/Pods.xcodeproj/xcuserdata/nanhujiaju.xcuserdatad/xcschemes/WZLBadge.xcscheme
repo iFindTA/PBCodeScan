@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '1C36CB850072F09A7327C0910DB75BEE'
-               BlueprintName = 'WZLBadge'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libWZLBadge.a'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D4950D4555F1A37BA57306F09ABCACC8"
+               BlueprintName = "WZLBadge"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "libWZLBadge.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

@@ -8,8 +8,11 @@
 
 #import "PBBaseProfile.h"
 #import <objc/message.h>
+#define MAS_SHORTHAND
+#define MAS_SHORTHAND_GLOBALS
+#import <Masonry/Masonry.h>
 
-static NSString * const PB_BASE_FONT               =   @"iconfont";
+static NSString * const PB_BASE_FONT               =   @"Helvetica-Bold";
 
 /**
  excute block func in main tread
@@ -38,7 +41,13 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
 
 @property (nonatomic, assign, readwrite) BOOL wetherInited;
 
-@property (nonatomic, strong, readwrite) UINavigationBar *navigationBar;
+@property (nonatomic, strong, readwrite) PBNavigationBar *navigationBar;
+
+/**
+ for iOS 11.0+
+ */
+@property (nonatomic, strong, readwrite) UIView *statusStretch;
+@property (nonatomic, strong) MASConstraint *statusConstraint;
 
 @end
 
@@ -60,11 +69,13 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
 
 - (void)loadView {
     [super loadView];
-    
-    //self.navigationController.navigationBarHidden = true;//disable swipe back gesture
-    self.navigationController.navigationBar.hidden = true;
+    if ([UIDevice currentDevice].systemVersion.floatValue < 11.0) {
+        //self.navigationController.navigationBarHidden = true;//disable swipe back gesture
+        self.navigationController.navigationBar.hidden = true;
+    }
     UINavigationBar *naviBar = [self initializedNavigationBar];
     [self.view addSubview:naviBar];
+    self.navigationBar = naviBar;
 }
 
 - (void)viewDidLoad {
@@ -73,11 +84,47 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.wetherInited = false;
+    /*
+    CGFloat status_bar_height = pb_expectedStatusBarHeight();
+    UIColor *bgColor = pbColorMake(PB_NAVIBAR_BARTINT_HEX);
+    UIView *stretch = [[UIView alloc] initWithFrame:CGRectZero];
+    stretch.backgroundColor = bgColor;
+    [self.view addSubview:stretch];
+    self.statusStretch = stretch;
+    weakify(self)
+    [self.statusStretch mas_makeConstraints:^(MASConstraintMaker *make) {
+        strongify(self)
+        make.top.left.right.equalTo(self.view);
+        make.height.equalTo(status_bar_height);
+    }];
+    [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        strongify(self)
+        make.top.equalTo(self.view).priority(UILayoutPriorityDefaultHigh);
+        if (!self.statusConstraint) {
+            self.statusConstraint = make.top.equalTo(self.view).offset(status_bar_height).priority(UILayoutPriorityRequired);
+        }
+        [self.statusConstraint deactivate];
+        make.left.right.equalTo(self.view);
+        make.height.equalTo(PB_NAVIBAR_HEIGHT - PB_STATUSBAR_HEIGHT);
+    }];
     
+    if (@available(iOS 11.0, *)) {
+        [self.statusConstraint activate];
+    }
+    //*/
+
+    self.navigationController.sj_gestureType = SJFullscreenPopGestureType_Full;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if (@available(iOS 11.0, *)) {
+        [self.navigationController.view sendSubviewToBack:self.navigationController.navigationBar];
+    }
     if (!_wetherInited) {
         //record presentaion mode
         BOOL isModal = false;
@@ -96,8 +143,9 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    [SVProgressHUD dismiss];
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD dismiss];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -120,16 +168,15 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
 
 #pragma mark -- custom navigation left back barItem
 
-- (UINavigationBar *)initializedNavigationBar {
-    if (!self.navigationBar) {
+- (PBNavigationBar *)initializedNavigationBar {
+    if (!_navigationBar) {
         //customize settings
         UIColor *tintColor = pbColorMake(PB_NAVIBAR_TINT_HEX);
         UIColor *barTintColor = pbColorMake(PB_NAVIBAR_BARTINT_HEX);//影响背景
         UIFont *font = [UIFont boldSystemFontOfSize:PBFontTitleSize + PBFONT_OFFSET];
         NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:tintColor, NSForegroundColorAttributeName,font,NSFontAttributeName, nil];
-        CGSize mainSize = [UIScreen mainScreen].bounds.size;
-        CGRect barBounds = CGRectMake(0, 0, mainSize.width, PB_NAVIBAR_HEIGHT);
-        UINavigationBar *naviBar = [[UINavigationBar alloc] initWithFrame:barBounds];
+        CGRect barBounds = CGRectZero;
+        PBNavigationBar *naviBar = [[PBNavigationBar alloc] initWithFrame:barBounds];
         naviBar.barStyle  = UIBarStyleBlack;
         //naviBar.backgroundColor = [UIColor redColor];
         UIImage *bgImg = [UIImage pb_imageWithColor:barTintColor];
@@ -140,17 +187,16 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
         naviBar.tintColor = tintColor;//影响item字体
         [naviBar setTranslucent:false];
         [naviBar setTitleTextAttributes:attributes];//影响标题
-        self.navigationBar = naviBar;
+        return naviBar;
     }
     
-    return self.navigationBar;
+    return _navigationBar;
 }
 
 - (void)hiddenNavigationBar {
-    //    CGRect frame = self.navigationBar.frame;
-    //    frame.origin.y -= PB_NAVIBAR_HEIGHT;
-    //    self.navigationBar.frame = frame;
-    //    [self.navigationBar displayColorLayer:false];
+    [self.statusStretch removeFromSuperview];
+    [self.navigationBar removeFromSuperview];
+    /*
     [self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     @synchronized (self.navigationBar) {
         [self.navigationBar.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -163,7 +209,8 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
             }
         }];
     }
-    //[self printHierarchy4View:self.navigationBar];
+    [self printHierarchy4View:self.navigationBar];
+    //*/
 }
 
 - (void)printHierarchy4View:(UIView *)view {
@@ -182,6 +229,10 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
     }
 }
 
+- (void)updateGesturePopStyle:(int)style {
+    self.navigationController.sj_gestureType = style;
+}
+
 - (void)changeNavigationBarShadow2Color:(UIColor *)color {
     UIImage *lineImg = [UIImage pb_imageWithColor:color];
     [self.navigationBar setShadowImage:lineImg];// line
@@ -189,7 +240,7 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
 
 - (UIBarButtonItem *)barSpacer {
     UIBarButtonItem *barSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    barSpacer.width = -PB_BOUNDARY_MARGIN;
+    barSpacer.width = - PB_BOUNDARY_MARGIN;
     return barSpacer;
 }
 
@@ -204,14 +255,17 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
     NSString *fontName = PB_BASE_FONT;
     UIFont *font = [UIFont fontWithName:fontName size:fontSize];
     NSString *title = PBFormat(@"%@%@",img, backTitle);
+    CGSize titleSize = [title pb_sizeThatFitsWithFont:font width:PBSCREEN_WIDTH];
     UIColor *fontColor = [UIColor pb_colorWithHexString:PB_NAVIBAR_TINT_STRING];
     //    CGFloat spacing = 2.f; // the amount of spacing to appear between image and title
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     //btn.backgroundColor = [UIColor pb_randomColor];
-    btn.frame = CGRectMake(0, 0, 55, 31);
+    btn.frame = CGRectMake(0, 0, titleSize.width, 30);
     btn.exclusiveTouch = true;
     btn.titleLabel.font = font;
-    //    btn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, spacing);
+    //btn.translatesAutoresizingMaskIntoConstraints = false;
+    //[btn setContentEdgeInsets:UIEdgeInsetsMake(13, 8, 13, 8)];
+    //    btn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, spacin
     //    btn.titleEdgeInsets = UIEdgeInsetsMake(0, spacing, 0, 0);
     [btn setTitle:title forState:UIControlStateNormal];
     [btn setTitleColor:fontColor forState:UIControlStateNormal];
@@ -275,6 +329,24 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
     CGSize m_bar_size = {PB_NAVIBAR_ITEM_SIZE, PB_NAVIBAR_ITEM_SIZE};
     UIButton *menu = [UIButton buttonWithType:UIButtonTypeCustom];
     menu.frame = (CGRect){.origin = CGPointZero,.size = m_bar_size};
+    [menu setImage:icon forState:UIControlStateNormal];
+    [menu addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithCustomView:menu];
+    return bar;
+}
+
+#pragma mark --- new method for icon
+
+- (UIBarButtonItem *)backBarButtonItem:(NSString *)backTitle iconImage:(UIImage *)img {
+    return [self assembleBar:img title:backTitle target:self selector:@selector(backBarItemTouchEvent)];
+}
+
+- (UIBarButtonItem *)assembleBar:(UIImage *)icon title:(NSString *)title target:(id)target selector:(SEL)selector {
+    
+    CGSize m_bar_size = {PB_NAVIBAR_ITEM_SIZE, PB_NAVIBAR_ITEM_SIZE};
+    UIButton *menu = [UIButton buttonWithType:UIButtonTypeCustom];
+    menu.frame = (CGRect){.origin = CGPointZero,.size = m_bar_size};
+    [menu setTitle:title forState:UIControlStateNormal];
     [menu setImage:icon forState:UIControlStateNormal];
     [menu addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithCustomView:menu];
@@ -463,6 +535,26 @@ typedef NS_ENUM(NSUInteger, PBViewPresentation) {
 
 void checkNavigationStack(UIViewController *wk) {
     assert(wk.navigationController != nil);
+}
+
+CGFloat pb_expectedStatusBarHeight() {
+    return [UIDevice pb_isiPhoneX] ? PB_STATUSBAR_HEIGHT_X : PB_STATUSBAR_HEIGHT;
+}
+
+void pb_adjustsScrollViewInsets(UIScrollView * scrollView) {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    if ([scrollView respondsToSelector:NSSelectorFromString(@"setContentInsetAdjustmentBehavior:")]) {
+        NSMethodSignature *signature = [UIScrollView instanceMethodSignatureForSelector:@selector(setContentInsetAdjustmentBehavior:)];;
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];;
+        NSInteger argument = 2;;
+        invocation.target = scrollView;;
+        invocation.selector = @selector(setContentInsetAdjustmentBehavior:);;
+        [invocation setArgument:&argument atIndex:2];;
+        [invocation retainArguments];;
+        [invocation invoke];;
+    }
+    #pragma clang diagnostic pop
 }
 
 NSString * const PB_STORAGE_DB_NAME                                         =   @"com.pb.nanhu.app.db";

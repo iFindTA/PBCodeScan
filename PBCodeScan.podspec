@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "PBCodeScan"
-  s.version      = "1.0.0"
+  s.version      = "1.2.0"
   s.summary      = "qr/bar code scanner for iOS development."
   s.description  = "qr/bar code scanner for FLK.Inc iOS Developers, such as ViewController/View etc."
 
@@ -26,5 +26,4 @@ Pod::Spec.new do |s|
   #s.dependency "JSONKit", "~> 1.4"
   s.dependency 'Masonry'
   s.dependency 'PBBaseClasses'
-  s.dependency 'ClusterPrePermissions'
 end

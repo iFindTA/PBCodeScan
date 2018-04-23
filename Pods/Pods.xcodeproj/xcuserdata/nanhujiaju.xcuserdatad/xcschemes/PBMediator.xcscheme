@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '176D148AC25AA222644AFF9AFA51A09B'
-               BlueprintName = 'PBMediator'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libPBMediator.a'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C9DAA25496F2B870BF7E29CC5B4703DF"
+               BlueprintName = "PBMediator"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "libPBMediator.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

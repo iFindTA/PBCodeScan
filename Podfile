@@ -4,6 +4,5 @@ platform :ios, '9.0'
 
 target 'PBCodeScan' do
 pod 'Masonry', '~> 1.0.2'
-pod 'PBBaseClasses', '~> 1.1.0'
-pod 'ClusterPrePermissions', '~> 0.8.1'
+pod 'PBBaseClasses', '~> 1.7.4'
 end

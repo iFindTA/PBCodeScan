@@ -7,7 +7,6 @@
 //
 
 #import <PBBaseClasses/PBBaseProfile.h>
-#import <ClusterPrePermissions/ClusterPrePermissions.h>
 
 @interface PBCodeScanProfile : PBBaseProfile
 

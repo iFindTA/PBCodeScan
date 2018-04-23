@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '9DC729AACB6A1808DDBF815C6062D4D6'
-               BlueprintName = 'PBKits'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libPBKits.a'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9A6CF8A369E3C73485BCDAE701BD7B7E"
+               BlueprintName = "PBKits"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "libPBKits.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

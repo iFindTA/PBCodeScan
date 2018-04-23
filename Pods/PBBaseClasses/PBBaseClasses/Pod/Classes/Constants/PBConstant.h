@@ -12,9 +12,12 @@
 static const int PB_SIDE_OFF_WIDTH                      =       60;
 static const int PB_BOUNDARY_MARGIN                     =       15;
 static const int PB_CONTENT_MARGIN                      =       10;
-static const int PB_NAVIBAR_HEIGHT                      =       64;
+static const int PB_NAVIBAR_HEIGHT                      =       44;
 static const int PB_STATUSBAR_HEIGHT                    =       20;
+static const int PB_STATUSBAR_HEIGHT_X                  =       44;
 static const int PB_NAVIBAR_ITEM_SIZE                   =       31;
+static const int PB_TABBAR_HEIGHT                       =       49;
+static const int PB_TABBAR_HEIGHT_X                     =       83;
 static const int PB_DESC_COUNTS                         =       60;
 static const int PB_CUSTOM_SEARCHBAR_HEIGHT             =       35;
 static const int PB_CUSTOM_BTN_HEIGHT                   =       40;

@@ -1,35 +1,47 @@
 PODS:
-  - ClusterPrePermissions (0.8.1)
   - Masonry (1.0.2)
-  - PBBaseClasses (1.1.0):
+  - PBBaseClasses (1.7.4):
+    - Masonry
     - PBKits
     - PBMediator
+    - SJFullscreenPopGesture
     - SVProgressHUD
     - WZLBadge
     - YYKit
-  - PBKits (1.2.0)
+  - PBKits (1.2.2)
   - PBMediator (0.2.0)
-  - SVProgressHUD (2.2)
+  - SJFullscreenPopGesture (1.4.0.2)
+  - SVProgressHUD (2.2.5)
   - WZLBadge (1.2.6)
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
-  - ClusterPrePermissions (~> 0.8.1)
   - Masonry (~> 1.0.2)
-  - PBBaseClasses (~> 1.1.0)
+  - PBBaseClasses (~> 1.7.4)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Masonry
+    - PBBaseClasses
+    - PBKits
+    - PBMediator
+    - SJFullscreenPopGesture
+    - SVProgressHUD
+    - WZLBadge
+    - YYKit
 
 SPEC CHECKSUMS:
-  ClusterPrePermissions: 168c127a658e423062550dd9c56fe26042a58bce
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  PBBaseClasses: e6b4a400f8489ae04d4c17a9acb4e8b52a8f4a72
-  PBKits: 0e6c61ae784d960e727b378e91daca5387bf94ab
+  PBBaseClasses: 4e563400d3626e54f10f3284b565d520920e70d5
+  PBKits: f0c06a07a3d65bd872e9e059301c3916cf5f71c7
   PBMediator: b9a87dd91276156805c7a12ba3bd45150142c4e8
-  SVProgressHUD: 3f37f3409ddb15f35c99315ae7dc33c474aa3256
+  SJFullscreenPopGesture: eabbbe43df7b717b43753a462c66b46942634469
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   WZLBadge: 9ec779dcfd94c825518b395e8315fccaabff1bfa
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 62e61dc726ba280b097e5d69e4db7adf887a20ef
+PODFILE CHECKSUM: 7a5cb07b2782557c82db522b592f6df0b1a71e25
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.5.0
